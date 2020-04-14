@@ -31,12 +31,12 @@ while True :
         cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
         count += 1
         # here we should save the captured image to the dataset folder
-        cv2.imwrite("/home/pi/facial-recognition-rasp/dataset/" + str(face_id) + '/' + str(count) + ".jpg", gray[y:y+h, x:x+w])
+        cv2.imwrite("/home/pi/facial-recognition-rasp/dataset/" + "user_" + str(face_id) + '_sample_' + str(count) + ".jpg", gray[y:y+h, x:x+w])
         cv2.imshow("image", img)
     k = cv2.waitKey(10) & 0xff  # here we can press ESC to exit the video
     if k == 27 :
         break
-    elif count >= 50 :           # we will take 30 face sample and stop the video
+    elif count >= 100 :           # we will take 30 face sample and stop the video
         break
     
 # let's clean up

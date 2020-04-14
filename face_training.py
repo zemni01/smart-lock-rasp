@@ -16,7 +16,7 @@ from PIL import Image
 
 
 # path for face image database
-path = "/home/pi/facial-recognition-rasp/dataset/houssem"
+path = "/home/pi/facial-recognition-rasp/dataset"
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 detector = cv2.CascadeClassifier("/home/pi/facial-recognition-rasp/haarcascades/haarcascade_frontalface_default.xml")
 
@@ -30,7 +30,7 @@ def getImagesAndLabel(path):
     for imagePath in imagePaths :
         PIL_image = Image.open(imagePath).convert("L")  # grayscale
         img_numpy = np.array(PIL_image, 'uint8')
-        id = int(os.path.split(imagePath)[-1].split(".")[0])
+        id = int(os.path.split(imagePath)[-1].split(".")[0].split("_")[1])
         faces = detector.detectMultiScale(img_numpy)
         for (x, y, w, h) in faces :
             faceSamples.append(img_numpy[y:y+h, x:x+w])

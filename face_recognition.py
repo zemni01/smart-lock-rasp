@@ -1,42 +1,25 @@
 """
 
 description :
-here is the final step for face recognition, this code will take a photo from the camera and compare its caracteristics to those already taken by the trainer in the yml file and will generate the id of the
+here is the final step for face recognition, this function will take a photo from the camera and compare its caracteristics to those already taken by the trainer in the yml file and will generate the id of the
 person and how confident the recognizer is.
 
 author : Houssem Zemni
 year : 2020
 
 """
-
-# import commun librairies
 import cv2
-import numpy as np
-import os
 
+def recognition(recognizer,faceCascade):
+    # initialize and start realtime video capture
+    cam = cv2.VideoCapture(0)
+    cam.set(3, 640)    # width
+    cam.set(4, 480)    # height
 
-recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read('/home/pi/facial-recognition-rasp/trainer/trainer.yml')
-cascadePath = "/home/pi/facial-recognition-rasp/haarcascades/haarcascade_frontalface_default.xml"
-faceCascade = cv2.CascadeClassifier(cascadePath)
-font = cv2.FONT_HERSHEY_SIMPLEX
-
-# let's define a counter for ids
-id = 0
-
-# also names related to ids ==> houssem : id=1
-names = ["houssem","azmi"]
-
-# initialize and start realtime video capture
-cam = cv2.VideoCapture(0)
-cam.set(3, 640)    # width
-cam.set(4, 480)    # height
-
-# let's also define minimum size of the window tobe recognized as a face
-minW = 0.1*cam.get(3)
-minH = 0.1*cam.get(4)
-
-while True :
+    # let's also define minimum size of the window tobe recognized as a face
+    minW = 0.1*cam.get(3)
+    minH = 0.1*cam.get(4)
+    
     ret, img = cam.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
@@ -55,9 +38,11 @@ while True :
         if (confidence < 100):
             id = names[0]
             confidence = "{0}%".format(round(100 - confidence))
+            door_lock = True 
         else :
             id = "unknown person"
             confidence = "{0}%".format(round(100 - confidence))
+            door_lock = False
             
         cv2.putText(
                     img,
@@ -78,12 +63,13 @@ while True :
                     1
                     )
         cv2.imshow("camera", img)
-        k = cv2.waitKey(10) & 0xff
-        if k == 27 :
-            break
+        time.sleep(60)
     
-# clean up
-print("\n [INFO] Exiting the program and clean up")
-cam.release()
-cv2.destroyAllWindows()
+        # clean up
+        print("\n [INFO] Exiting the program and clean up")
+        cam.release()
+        cv2.destroyAllWindows()
+        return door_lock
+    
+
     
